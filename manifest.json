@@ -6,7 +6,8 @@
   "permissions": ["tabs", "storage"],
   "action": {
     "default_popup": "popup/popup.html",
-    "default_title": "Multi-Opener"
+    "default_title": "Multi-Opener",
+    "default_icon": "icons/icon-128.png"
   },
   "options_page": "options/options.html",
   "background": {
