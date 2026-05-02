@@ -19,14 +19,17 @@ const DEFAULT_TEMPLATES = [
   }
 ];
 
-// Initialize storage on extension install
-chrome.runtime.onInstalled.addListener(() => {
+// Initialize storage on extension install or startup
+function initializeTemplates() {
   chrome.storage.local.get("templates", (result) => {
     if (!result.templates) {
       chrome.storage.local.set({ templates: DEFAULT_TEMPLATES });
     }
   });
-});
+}
+
+chrome.runtime.onInstalled.addListener(initializeTemplates);
+chrome.runtime.onStartup.addListener(initializeTemplates);
 
 // Handle messages from popup
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -34,9 +37,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     handleOpenTabs(request.items, request.templateId, sendResponse);
   } else if (request.action === "getTemplates") {
     chrome.storage.local.get("templates", (result) => {
-      sendResponse({ templates: result.templates || DEFAULT_TEMPLATES });
+      const templates = result.templates || DEFAULT_TEMPLATES;
+      // Also ensure storage is initialized
+      if (!result.templates) {
+        chrome.storage.local.set({ templates: DEFAULT_TEMPLATES });
+      }
+      sendResponse({ templates: templates });
     });
   }
+  return true; // Keep message channel open for async sendResponse
 });
 
 // Handle opening tabs
