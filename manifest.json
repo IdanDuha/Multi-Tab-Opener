@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "Multi-Opener",
+  "version": "1.0.0",
+  "description": "Open multiple URLs/app links in new tabs from comma-separated input",
+  "permissions": ["tabs", "storage"],
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "Multi-Opener"
+  },
+  "options_page": "options/options.html",
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "128": "icons/icon-128.png"
+  }
+}
