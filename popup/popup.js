@@ -2,10 +2,46 @@ const itemsInput = document.getElementById("itemsInput");
 const templateSelect = document.getElementById("templateSelect");
 const openAllBtn = document.getElementById("openAllBtn");
 const settingsBtn = document.getElementById("settingsBtn");
+const addCommasBtn = document.getElementById("addCommasBtn");
 const messageEl = document.getElementById("message");
 
 // Load templates when popup opens
 document.addEventListener("DOMContentLoaded", loadTemplates);
+
+// Handle "Add Commas" button click
+addCommasBtn.addEventListener("click", handleAddCommas);
+
+function handleAddCommas() {
+  const rawText = itemsInput.value.trim();
+
+  if (!rawText) {
+    showMessage("Please enter items first", "error");
+    return;
+  }
+
+  // Split by spaces and/or newlines, filter empty values
+  const items = rawText
+    .split(/[\s\n]+/)
+    .filter((item) => item.length > 0);
+
+  if (items.length === 0) {
+    showMessage("No items found", "error");
+    return;
+  }
+
+  // Join with commas
+  const commaJoined = items.join(",");
+
+  // Fill the items field
+  itemsInput.value = commaJoined;
+
+  // Copy to clipboard
+  navigator.clipboard.writeText(commaJoined).then(() => {
+    showMessage(`Added commas! Copied ${items.length} items to clipboard`, "success");
+  }).catch(() => {
+    showMessage(`Added commas to ${items.length} items (copy to clipboard failed)`, "success");
+  });
+}
 
 function loadTemplates() {
   chrome.runtime.sendMessage({ action: "getTemplates" }, (response) => {
